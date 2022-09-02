@@ -79,7 +79,7 @@ async def select_action(
 
 @app.post("/v1/models/reward-action", status_code=status.HTTP_201_CREATED)
 @inject
-async def select_action(
+async def reward_action(
     request: BanditRewardActionRequest,
     bandit_service: BanditService = Depends(Provide[Container.bandit_service]),
 ):
