@@ -15,6 +15,7 @@ from app.algorithms.egreedy import EGreedy
 from app.algorithms.linucb import LinUCB
 from app.containers import Container
 from app.models.pymodels import BanditCreateModelRequest, BanditSelectActionRequest, GeneralResponse
+from app.services.bandit_service import BanditService
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,18 +38,19 @@ app = FastAPI(
 
 
 @app.post("/v1/models/create", status_code=status.HTTP_201_CREATED)
+@inject
 async def v1_models_create_model(
     request: BanditCreateModelRequest,
-    egreedy: EGreedy = Depends(Provide[Container.egreedy]),
-    linucb: LinUCB = Depends(Provide[Container.linucb]),
+    bandit_service: BanditService = Depends(Provide[Container.bandit_service]),
 ):
     """
     Create a model
     """
     if request.algorithm == "egreedy":
-        await egreedy.create_model(request.model_name, request.actions, request.epsilon)
+        await bandit_service.create_egreedy_model(request.model_name, request.actions, request.epsilon)
+        # await bandit_service.egreedy.create_model(request.model_name, request.actions, request.epsilon)
     elif request.algorithm == "linucb":
-        await linucb.create_model(request.model_name, request.actions, request.n_features, request.alpha)
+        await bandit_service.linucb.create_model(request.model_name, request.actions, request.n_features, request.alpha)
 
     return GeneralResponse(message="OK", status_code=status.HTTP_201_CREATED, data={})
 

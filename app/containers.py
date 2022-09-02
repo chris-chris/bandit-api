@@ -6,6 +6,7 @@ import app.config.redis_pool as redis_pool
 from app.algorithms.egreedy import EGreedy
 from app.algorithms.ucb1 import UCB1
 from app.algorithms.linucb import LinUCB
+from app.services.bandit_service import BanditService
 
 
 class Container(containers.DeclarativeContainer):
@@ -36,4 +37,14 @@ class Container(containers.DeclarativeContainer):
     linucb = providers.Factory(
         LinUCB,
         redis=redis_pool,
+    )
+
+    ############
+    # services
+    ############
+    bandit_service = providers.Factory(
+        BanditService,
+        redis=redis_pool,
+        egreedy=egreedy,
+        linucb=linucb,
     )
