@@ -64,35 +64,40 @@ class LinUCB:
 
 
 if __name__ == "__main__":
-    linucb = LinUCB(["a", "b", "c"], 3, 0.1)
-    context = np.array([1, 0, 0])
+    linucb = LinUCB(["a", "b"], 2, 0.1)
     print(linucb.covariance_matrices)
     print(linucb.reward_matrix)
 
+    context = np.array([1, 0])  # male
     action = linucb.select_action(context)
     print(f"{action} for context({context})")
-
-    context = np.array([1, 1, 0])
-    linucb.reward_action(action, context, 1)
+    linucb.reward_action(action, context)
     print(linucb.covariance_matrices)
     print(linucb.reward_matrix)
 
-    context = np.array([0, 1, 1])
+    context = np.array([0, 1])  # female
     action = linucb.select_action(context)
     print(f"{action} for context({context})")
     print(linucb.covariance_matrices)
     print(linucb.reward_matrix)
 
-    context = np.array([0, 0, 1])
+    context = np.array([1, 0])  # male
     action = linucb.select_action(context)
     print(f"{action} for context({context})")
-    linucb.reward_action(action, context, 1)
+    linucb.reward_action(action, context)
     print(linucb.covariance_matrices)
     print(linucb.reward_matrix)
 
-    context = np.array([1, 1, 1])
+    context = np.array([0, 1])  # female
     action = linucb.select_action(context)
     print(f"{action} for context({context})")
-    linucb.reward_action(action, context, 1)
+    linucb.reward_action(action, context)
+    print(linucb.covariance_matrices)
+    print(linucb.reward_matrix)
+
+    context = np.array([1, 1])  # unknown sex
+    action = linucb.select_action(context)
+    print(f"{action} for context({context})")
+    linucb.reward_action(action, context)
     print(linucb.covariance_matrices)
     print(linucb.reward_matrix)
