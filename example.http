@@ -20,7 +20,7 @@ content-type: application/json
 }
 
 ###
-POST http://44.210.118.18:8000/v1/models/create  HTTP/1.1
+POST http://44.210.118.18:8080/v1/models/create  HTTP/1.1
 content-type: application/json
 
 {
@@ -29,4 +29,25 @@ content-type: application/json
     "epsilon": 0.1,
     "actions": ["left", "right"],
     "n_actions": 2
+}
+
+###
+
+POST http://44.210.118.18:8080/v1/models/select-action  HTTP/1.1
+content-type: application/json
+
+{
+    "algorithm": "egreedy",
+    "model_name":"chris"
+}
+
+###
+
+POST http://44.210.118.18:8080/v1/models/reward-action  HTTP/1.1
+content-type: application/json
+
+{
+    "algorithm": "egreedy",
+    "model_name":"chris",
+    "action": "left"
 }

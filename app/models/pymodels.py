@@ -61,6 +61,7 @@ class BanditRewardActionRequest(BaseModel):
 
 class BanditRewardActionRequest(BaseModel):
     model_name: str
+    algorithm: str
     action: str
     context: Optional[List[int]]
 
