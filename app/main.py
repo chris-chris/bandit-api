@@ -9,9 +9,12 @@ from fastapi import (
     Depends,
     BackgroundTasks,
 )
-from app.containers import Container
+from dependency_injector.wiring import inject, Provide
 
-from app.models.pymodels import BanditSelectActionRequest, GeneralResponse
+from app.algorithms.egreedy import EGreedy
+from app.algorithms.linucb import LinUCB
+from app.containers import Container
+from app.models.pymodels import BanditCreateModelRequest, BanditSelectActionRequest, GeneralResponse
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,6 +34,23 @@ app = FastAPI(
         "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
     },
 )
+
+
+@app.post("/v1/models/create", status_code=status.HTTP_201_CREATED)
+async def v1_models_create_model(
+    request: BanditCreateModelRequest,
+    egreedy: EGreedy = Depends(Provide[Container.egreedy]),
+    linucb: LinUCB = Depends(Provide[Container.linucb]),
+):
+    """
+    Create a model
+    """
+    if request.algorithm == "egreedy":
+        await egreedy.create_model(request.model_name, request.actions, request.epsilon)
+    elif request.algorithm == "linucb":
+        await linucb.create_model(request.model_name, request.actions, request.n_features, request.alpha)
+
+    return GeneralResponse(message="OK", status_code=status.HTTP_201_CREATED, data={})
 
 
 @app.post("/v1/bandit/select-action", status_code=status.HTTP_200_OK)
@@ -59,3 +79,9 @@ container.config.redis_db.from_env("REDIS_DB", "0")
 container.wire(modules=[
     __name__,
 ])
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -26,6 +26,16 @@ class GeneralResponse(BaseModel):
         allow_population_by_field_name = True
 
 
+class BanditCreateModelRequest(BaseModel):
+    model_name: str
+    algorithm: str
+    actions: List[str]
+    n_features: Optional[int]
+    n_actions: int
+    alpha: Optional[float] = 0.1
+    epsilon: Optional[float] = 0.1
+
+
 class BanditSelectActionRequest(BaseModel):
     model_name: str
 
