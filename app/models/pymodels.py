@@ -38,6 +38,7 @@ class BanditCreateModelRequest(BaseModel):
 
 class BanditSelectActionRequest(BaseModel):
     model_name: str
+    algorithm: str
     context: Optional[List[int]]
 
     class Config:
@@ -47,6 +48,7 @@ class BanditSelectActionRequest(BaseModel):
 
 
 class BanditRewardActionRequest(BaseModel):
+    algorithm: str
     model_name: str
     action: str
     context: Optional[List[int]]

@@ -8,3 +8,13 @@ content-type: application/json
     "actions": ["left", "right"],
     "n_actions": 2
 }
+
+###
+
+POST http://localhost:8000/v1/models/select-action  HTTP/1.1
+content-type: application/json
+
+{
+    "algorithm": "egreedy",
+    "model_name":"test"
+}

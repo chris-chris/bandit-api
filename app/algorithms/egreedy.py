@@ -52,8 +52,8 @@ class EGreedy:
         model_meta = await self.redis.get(f"model_meta:{model_name}")
         model_meta = ujson.loads(model_meta)
         actions = model_meta["actions"]
-
-        action_tries = m.unpackb(await self.redis.get(f"action_tries:{model_name}")).copy()
+        action_tries_byes = await self.redis.get(f"action_tries:{model_name}")
+        action_tries = m.unpackb(action_tries_byes).copy()
 
         untested_actions = np.nonzero(action_tries == 0)[0]
         if untested_actions.size == 0:
