@@ -48,7 +48,6 @@ async def v1_models_create_model(
     """
     try:
         if request.algorithm == "egreedy":
-            # await bandit_service.create_egreedy_model(request.model_name, request.actions, request.epsilon)
             await bandit_service.egreedy.create_model(request.model_name, request.actions, request.epsilon)
         elif request.algorithm == "linucb":
             await bandit_service.linucb.create_model(request.model_name, request.actions, request.n_features, request.alpha)
@@ -68,7 +67,6 @@ async def select_action(
     """
     try:
         if request.algorithm == "egreedy":
-            # await bandit_service.create_egreedy_model(request.model_name, request.actions, request.epsilon)
             action = await bandit_service.egreedy.select_action(request.model_name)
         elif request.algorithm == "linucb":
             action = await bandit_service.linucb.select_action(request.model_name, request.context)

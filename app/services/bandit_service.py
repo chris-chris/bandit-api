@@ -11,6 +11,3 @@ class BanditService:
         self.redis = redis
         self.egreedy = egreedy
         self.linucb = linucb
-
-    async def create_egreedy_model(self, model_name: str, actions: List[str], epsilon: float):
-        return await self.egreedy.create_model(model_name, actions, epsilon)

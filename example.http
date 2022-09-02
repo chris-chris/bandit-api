@@ -2,7 +2,7 @@ POST http://localhost:8000/v1/models/create  HTTP/1.1
 content-type: application/json
 
 {
-    "model_name":"test",
+    "model_name":"hello",
     "algorithm": "egreedy",
     "epsilon": 0.1,
     "actions": ["left", "right"],
@@ -16,7 +16,18 @@ content-type: application/json
 
 {
     "algorithm": "egreedy",
-    "model_name":"test"
+    "model_name":"hello"
+}
+
+###
+
+POST http://localhost:8000/v1/models/reward-action  HTTP/1.1
+content-type: application/json
+
+{
+    "algorithm": "egreedy",
+    "model_name":"hello",
+    "action": "left"
 }
 
 ###
