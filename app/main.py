@@ -14,7 +14,7 @@ from dependency_injector.wiring import inject, Provide
 from app.algorithms.egreedy import EGreedy
 from app.algorithms.linucb import LinUCB
 from app.containers import Container
-from app.models.pymodels import BanditCreateModelRequest, BanditSelectActionRequest, GeneralResponse
+from app.models.pymodels import BanditCreateModelRequest, BanditRewardActionRequest, BanditSelectActionRequest, GeneralResponse
 from app.services.bandit_service import BanditService
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
@@ -46,32 +46,55 @@ async def v1_models_create_model(
     """
     Create a model
     """
-    if request.algorithm == "egreedy":
-        await bandit_service.create_egreedy_model(request.model_name, request.actions, request.epsilon)
-        # await bandit_service.egreedy.create_model(request.model_name, request.actions, request.epsilon)
-    elif request.algorithm == "linucb":
-        await bandit_service.linucb.create_model(request.model_name, request.actions, request.n_features, request.alpha)
-
+    try:
+        if request.algorithm == "egreedy":
+            # await bandit_service.create_egreedy_model(request.model_name, request.actions, request.epsilon)
+            await bandit_service.egreedy.create_model(request.model_name, request.actions, request.epsilon)
+        elif request.algorithm == "linucb":
+            await bandit_service.linucb.create_model(request.model_name, request.actions, request.n_features, request.alpha)
+    except Exception as e:
+        return GeneralResponse(status_code=400, message=str(e), data=None)
     return GeneralResponse(message="OK", status_code=status.HTTP_201_CREATED, data={})
 
 
-@app.post("/v1/bandit/select-action", status_code=status.HTTP_200_OK)
-async def v1_bandit_select_action(
-        request: BanditSelectActionRequest,
-        response: Response,
+@app.post("/v1/models/select-action", status_code=status.HTTP_201_CREATED)
+@inject
+async def select_action(
+    request: BanditSelectActionRequest,
+    bandit_service: BanditService = Depends(Provide[Container.bandit_service]),
 ):
+    """
+    Select an action
+    """
     try:
-        if request.model_name == "baseline" and request.model_version == "1":
-            data = baseline_v1(request)
-        elif request.model_name == "estimate-ratio" and request.model_version == "1":
-            data = estimate_ratio_v1(request)
-        data, message = service.insert_strategy(request, data)
-
-        return GeneralResponse(status_code=20000, message=message, data=data).dict(by_alias=True)
+        if request.algorithm == "egreedy":
+            # await bandit_service.create_egreedy_model(request.model_name, request.actions, request.epsilon)
+            action = await bandit_service.egreedy.select_action(request.model_name)
+        elif request.algorithm == "linucb":
+            action = await bandit_service.linucb.select_action(request.model_name, request.context)
     except Exception as e:
-        message = f"{e}\n{traceback.format_exc()}"
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return GeneralResponse(status_code=50000, message=f"Exception: {e}", data={}).dict(by_alias=True)
+        return GeneralResponse(status_code=400, message=str(e), data=None)
+    return GeneralResponse(message="OK", status_code=status.HTTP_201_CREATED, data={"action": action})
+
+
+@app.post("/v1/models/reward-action", status_code=status.HTTP_201_CREATED)
+@inject
+async def select_action(
+    request: BanditRewardActionRequest,
+    bandit_service: BanditService = Depends(Provide[Container.bandit_service]),
+):
+    """
+    Select an action
+    """
+    try:
+        if request.algorithm == "egreedy":
+            # await bandit_service.create_egreedy_model(request.model_name, request.actions, request.epsilon)
+            res = await bandit_service.egreedy.reward_action(request.model_name, request.action)
+        elif request.algorithm == "linucb":
+            res = await bandit_service.linucb.reward_action(request.model_name, request.action, request.context)
+    except Exception as e:
+        return GeneralResponse(status_code=400, message=str(e), data=None)
+    return GeneralResponse(message="OK", status_code=status.HTTP_201_CREATED, data=res)
 
 
 container = Container()

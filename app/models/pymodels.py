@@ -38,6 +38,7 @@ class BanditCreateModelRequest(BaseModel):
 
 class BanditSelectActionRequest(BaseModel):
     model_name: str
+    context: Optional[List[int]]
 
     class Config:
         alias_generator = to_camel
@@ -48,6 +49,18 @@ class BanditSelectActionRequest(BaseModel):
 class BanditRewardActionRequest(BaseModel):
     model_name: str
     action: str
+    context: Optional[List[int]]
+
+    class Config:
+        alias_generator = to_camel
+        allow_population_by_field_name = True
+        orm_mode = True
+
+
+class BanditRewardActionRequest(BaseModel):
+    model_name: str
+    action: str
+    context: Optional[List[int]]
 
     class Config:
         alias_generator = to_camel
