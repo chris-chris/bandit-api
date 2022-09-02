@@ -4,3 +4,4 @@ pydantic~=1.9.1
 dependency_injector
 ujson
 msgpack_numpy
+pydantic_sqlalchemy
