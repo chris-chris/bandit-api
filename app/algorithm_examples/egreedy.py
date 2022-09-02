@@ -42,3 +42,35 @@ class EGreedy:
             raise ValueError(f"action {action} not recognized")
         action_index = self.actions.index(action)
         self.action_successes[action_index] += 1
+
+
+if __name__ == "__main__":
+    egreedy = EGreedy(["a", "b", "c"], 0.2)
+
+    # 1
+    action = egreedy.select_action()
+    print(action)
+    egreedy.reward_action(action)
+
+    # 2
+    action = egreedy.select_action()
+    print(action)
+    egreedy.reward_action(action)
+
+    # 3
+    action = egreedy.select_action()
+    print(action)
+
+    # 4
+    action = egreedy.select_action()
+    print(action)
+
+    for _ in range(100):
+        action = egreedy.select_action()
+        print(action)
+        if random.random() > 0.8:
+            egreedy.reward_action(action)
+            print("rewarded")
+
+    print(egreedy.action_successes)
+    print(egreedy.action_tries)

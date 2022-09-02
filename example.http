@@ -49,5 +49,5 @@ content-type: application/json
 {
     "algorithm": "egreedy",
     "model_name":"chris",
-    "action": "left"
+    "action": "right"
 }
